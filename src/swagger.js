@@ -207,6 +207,72 @@ export const swaggerSpec = {
         },
       },
     },
+    '/tickets': {
+      get: {
+        tags: ['Lookup'],
+        summary: 'List tickets for an order',
+        description: 'Returns all tickets belonging to the given order. Use this to verify tickets were confirmed after a successful payment webhook.',
+        parameters: [
+          {
+            name: 'order_id',
+            in: 'query',
+            required: true,
+            schema: { type: 'string' },
+            example: '1',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'List of tickets',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: { $ref: '#/components/schemas/Ticket' },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Missing order_id query param',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/webhook-logs': {
+      get: {
+        tags: ['Lookup'],
+        summary: 'List webhook log entries',
+        description: 'Returns all webhook log entries, or filter by a specific webhook_event_id. Use this to verify an audit trail was created.',
+        parameters: [
+          {
+            name: 'webhook_event_id',
+            in: 'query',
+            required: false,
+            schema: { type: 'string' },
+            example: 'evt_001',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Webhook log entries',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: { $ref: '#/components/schemas/WebhookLog' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
   components: {
     schemas: {
@@ -259,6 +325,25 @@ export const swaggerSpec = {
           order_id: { type: 'string' },
           amount: { type: 'number' },
           status: { type: 'string', enum: ['pending', 'processing', 'completed', 'failed'] },
+        },
+      },
+      Ticket: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          order_id: { type: 'string' },
+          status: { type: 'string', enum: ['held', 'confirmed', 'cancelled'] },
+          unit_price: { type: 'number' },
+        },
+      },
+      WebhookLog: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          webhook_event_id: { type: 'string' },
+          payment_id: { type: 'string' },
+          status: { type: 'string' },
+          received_at: { type: 'string', format: 'date-time' },
         },
       },
       SeedRequest: {

@@ -46,6 +46,22 @@ app.get('/payments/:id', (req, res) => {
   res.json(payment);
 });
 
+app.get('/tickets', (req, res) => {
+  const { order_id } = req.query;
+  if (!order_id) return res.status(400).json({ error: 'order_id query param required' });
+  const tickets = db.filter('tickets', (t) => t.order_id === String(order_id));
+  res.json(tickets);
+});
+
+app.get('/webhook-logs', (req, res) => {
+  const { webhook_event_id } = req.query;
+  if (webhook_event_id) {
+    const log = db.findOne('webhookLogs', (l) => l.webhook_event_id === webhook_event_id);
+    return res.json(log ? [log] : []);
+  }
+  res.json(db.webhookLogs);
+});
+
 app.post('/reset', (req, res) => {
   db.reset();
   res.json({ message: 'reset complete' });
