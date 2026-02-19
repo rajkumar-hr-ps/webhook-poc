@@ -1,0 +1,23 @@
+{
+  "name": "webhook-poc",
+  "version": "1.0.0",
+  "description": "Standalone POC for payment webhook handler — in-memory, no external dependencies",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "cross-env NODE_ENV=test mocha --reporter mocha-multi-reporters --reporter-options configFile=config.json test/**/*.spec.js --exit",
+    "test:quick": "mocha test/**/*.spec.js --exit"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "chai-http": "^5.1.1",
+    "cross-env": "^7.0.3",
+    "mocha": "^11.1.0",
+    "mocha-junit-reporter": "^2.2.1",
+    "mocha-multi-reporters": "^1.5.1"
+  }
+}
